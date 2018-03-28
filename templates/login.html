@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename="style.css") }}">
+    <meta charset="UTF-8">
+    <title>PhotoShare Login</title>
+</head>
+<body>
+    <div class="navbar">
+        <a class="logolink" href="{{ url_for("index") }}">MBTA</a>
+        <div class="userlinks">
+            {% if account %}
+                <span><a href="{{ url_for("profile") }}">Profile</a></span>
+                <span><a href="{{ url_for("logout") }}">Logout</a></span>
+            {% else %}
+                <span><a href="{{ url_for("register") }}">Register</a></span>
+                <span><a href="{{ url_for("login") }}">Login</a></span>
+            {% endif %}
+        </div>
+    </div>
+    <div class="container MBTA-container">
+        <h2>Please enter your email and password.</h2>
+        {% if message %}
+            <p class="message">{{ message }}</p>
+        {% endif %}
+        {% if errmessage %}
+            <p class="errmessage">{{ errmessage }}</p>
+        {% endif %}
+        <div><form action='{{ url_for("login") }}' method='POST'>
+            <table>
+                <tr>
+                    <td><label for="email">User email: </label></td>
+                    <td><input type='text' name='email' id='email' placeholder='Enter your email'/></td>
+                </tr>
+                <tr>
+                    <td><label for="password">Password: </label></td>
+                    <td><input type='password' name='password' id='password' placeholder='Enter your password'/></td>
+                </tr>
+            </table>
+            <input type='submit' name='Submit' value="SUBMIT"/>
+        </form></div>
+        <p>Don't have an account? Create one <a href='{{ url_for("register") }}'>here.</a></p>
+    </div>
+</body>
+</html>

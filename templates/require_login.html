@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Require Login</title>
+</head>
+<body>
+    <div class="navbar">
+        <a class="logolink" href="{{ url_for("index") }}">PhotoShare</a>
+    </div>
+    <div class="container photoshare-container">
+    <h3>Require Login</h3>
+    <div>
+        Only registered users can access this page. You can try:
+        <div>
+            <p><a href='/login'>Login</a></p>
+            <p><a href='/'>Back to Homepage</a></p>
+            <p>Don't have an account? <a href='/register'>Create a new one!</a></p>
+        </div>
+    </div>
+    </div>
+</body>
+</html>
