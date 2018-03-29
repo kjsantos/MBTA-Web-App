@@ -1,0 +1,22 @@
+Ideas for Project
+
+1. 
+2.
+3.
+
+
+Idea (Darren): Make an app that uses the MBTA API. Each user will create a profile and enter their typical bus/train stop that they take
+on a regular basis to get to work/school. They'll input their destination and the latest time they can make it to their
+destination.  Also, they'll input their home address so the app can calculate how long it takes to walk to their stop. The app will 
+use that profile info to send them a text or notification to let them know when they should leave their house to catch the bus/train 
+on time without having to wait for a long time for the bus/train to arrive while making sure they won't miss their bus/train. 
+It will identify which bus/train to take to make sure that they get to their destination on time. About an hour before 
+they need to start walking, the app will give them an estimated time they'll need to leave and alert them periodically as that
+estimation changes with new data. The purpose of the app is to be avoid the rotuine frustration of blindly leaving to catch the bus/train 
+and waiting a long time at the stop for the bus/train to arrive. If the API also has the information available, I'd like to display
+the probability of a bus/train being full when it arrives at their stop.
+
+Idea 2 : Make a website that uses Imdb, Metacritic, Hulu, or Netflix. A user will create a profile using Facebook or Twitter info. And
+then from these people will be able to view what their friends are watching. This is similar to how Spotify shows you what your friends 
+are listening to. If you want to allow notifications onto your screen it will notify you when your friend just finished a series or an
+episode of a new show. This can help people get recommendations for movies and shows based on people of similar interests to them.

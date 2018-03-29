@@ -1,0 +1,18 @@
+CS411 Assignment 2
+
+1. As a user I would like to enter the first page and be welcomed to a page where I could enter my email and password or 
+log in through my google account. Then from there I can log in my coordinates and where I need to go at what time. 
+From there I let the web application determine the best route and time to leave and up until I leave it keeps updating. 
+Then it can update that into my google calendar so I get a reminder when I need to leave.
+
+
+2. As a user I should be able to save previous destinations and look through a list of them so that I don’t have to replan 
+my route or reenter my destination. This will save time and I will be able to compare previous routes and see which ones I 
+like the best.
+ 
+3. As a logged in user I should be able to go into a MyProfile page. From there I should be able to add my house address, 
+favorite Bus/T stop, and an entry for each day of the week for the time I need to catch a bus/T. Using this information, 
+the app will automatically send notifications each day the user needs to catch a bus/T
+
+4. As a logged in user I should be able to go into a Settings page. From there I can log out or adjust notification sounds. 
+
