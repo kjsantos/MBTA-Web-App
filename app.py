@@ -7,9 +7,10 @@ app = Flask(__name__)
 def temperature():
     zipcode = request.form['zip']
     r = requests.get('http://api.openweathermap.org/data/2.5/weather?zip='+zipcode+',us&appid=b0e0bbe93793b39e76cc1b1a65e32369')
-    json_object = r.json()
+    json_object = r.text
     temp_k = float(json_object['main']['temp'])
     temp_f = round(((temp_k - 273.15) * 1.8 + 32),1)
+
     return render_template('temperature.html', temp=temp_f)
 
 @app.route('/')
