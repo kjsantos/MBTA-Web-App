@@ -1,7 +1,17 @@
 from flask import Flask, render_template, request
+from flask_oauthlib.client import OAuth
+from flask_pymongo import PyMongo
 import requests
 
+
 app = Flask(__name__)
+app.debug = True
+app.secret_key = 'ThisSux'
+app.config["MONGO_DBNAME"] = "MBTAData"
+app.config["MONGO_URI"] = "mongodb://localhost/27017"
+
+mongo = PyMongo(app)
+oauth = OAuth.app
 
 @app.route('/temperature', methods=['POST'])
 def temperature():
@@ -14,6 +24,8 @@ def temperature():
     humid = float(json_object['main']['humidity'])
     location = (json_object['name'])
     return render_template('temperature.html', temp=temp_f, humidity=humid,name=location)
+
+@app.route
 
 @app.route('/')
 def index():
