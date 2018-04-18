@@ -1,10 +1,18 @@
 <html>
 	<head>
-		<title>Request Example</title>
+		<title>Let's MBTA!</title>
 	</head>
 	<body>
+        <h1>Let's MBTA!</h1>
+        <form action="login" action="POST">
+            Login:
+            <input type='text' name='email' id='email' placeholder='Email'>
+            <input type='password' name='password' id='password' placeholder='Password'>
+            <input type='submit' name='submit' placeholder="Login">
+        </form>
 		<form method="POST" action="/temperature">
-			Zip Code : <input type="text" name="zip">
+			Zip Code :
+            <input type="text" name="zip">
 			<input type="submit">
 		</form>
 	</body>
