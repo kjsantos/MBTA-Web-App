@@ -1,5 +1,5 @@
+import flask
 from flask import Flask, render_template, request
-from flask_oauthlib.client import OAuth
 from flask_pymongo import PyMongo
 import requests
 
@@ -11,7 +11,7 @@ app.config["MONGO_DBNAME"] = "MBTAData"
 app.config["MONGO_URI"] = "mongodb://localhost/27017"
 
 mongo = PyMongo(app)
-oauth = OAuth.app
+#oauth = OAuth.app
 
 @app.route('/temperature', methods=['POST'])
 def temperature():
@@ -25,7 +25,40 @@ def temperature():
     location = (json_object['name'])
     return render_template('temperature.html', temp=temp_f, humidity=humid,name=location)
 
-@app.route
+@app.route('/register', methods=['POST', 'GET'])
+def register_user():
+    try:
+        email=request.form.get('email')
+        password=request.form.get('password')
+        firstname=request.form.get('fname')
+        lastname=request.form.get('lname')
+    except:
+        print ("couldn't find all tokens")
+        #this prints to shell, end users will not see this (all print statements go to shell)
+        return flask.redirect(flask.url_for('register'))
+    cursor = conn.cursor()
+    test =  isEmailUnique(email)
+    if test:
+        print (cursor.execute("INSERT INTO Users (email, password, firstname, lastname) VALUES ('{0}', '{1}', '{2}', '{3}',)".format(email, password, firstname, lastname)))
+        conn.commit()
+        #log user in
+        user = User()
+        user.id = email
+        flask_login.login_user(user)
+        return render_template('index.html')
+    else:
+        print ("couldn't find all tokens")
+        return flask.redirect(flask.url_for('register'))
+
+from flask.ext.cache import Cache
+cache = Cache(app, config={'CACHE_TYPE': 'simple'})
+
+@cache.cached(timeout=50, key_prefix='api_call')
+def call_routes():
+    r = requests.get('https://api-v3.mbta.com/stops')
+    stops = r.json()['data']
+    for i in stops:
+        data = i['attributes']
 
 @app.route('/')
 def index():
