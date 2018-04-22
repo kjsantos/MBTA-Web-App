@@ -21,9 +21,14 @@ def temperature():
     temp_k = float(json_object['main']['temp'])
     temp_f = round(((temp_k - 273.15) * 1.8 + 32),1)
     #condition = (json_object(['weather']))
+    temp_highk = float(json_object['main']['temp_max'])
+    temp_highf = round(((temp_highk - 273.15) * 1.8 + 32),1)
+    temp_lowk = float(json_object['main']['temp_min'])
+    temp_lowf = round(((temp_lowk - 273.15) * 1.8 + 32),1)
     humid = float(json_object['main']['humidity'])
+    weather = (json_object['weather'][0]['description'])
     location = (json_object['name'])
-    return render_template('temperature.html', temp=temp_f, humidity=humid,name=location)
+    return render_template('temperature.html', temp=temp_f, humidity=humid,name=location, high=temp_highf, low=temp_lowf,description=weather)
 
 @app.route('/register', methods=['POST', 'GET'])
 def register_user():
@@ -36,6 +41,7 @@ def register_user():
         print ("couldn't find all tokens")
         #this prints to shell, end users will not see this (all print statements go to shell)
         return flask.redirect(flask.url_for('register'))
+
     cursor = conn.cursor()
     test =  isEmailUnique(email)
     if test:

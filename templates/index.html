@@ -1,19 +1,22 @@
 <html>
 	<head>
+        <meta charset="UTF-8">
 		<title>Let's MBTA!</title>
+        <link rel = "stylesheet" href = "static/mystyle.css" type = "text/css" />
 	</head>
-	<body>
-        <h1>Let's MBTA!</h1>
-        <form action="login" action="POST">
-            Login:
+	<body background="static/map.jpg">
+        <h1><center>Let's MBTA!</center></h1>
+        <center><form action="login" action="POST">
+            Sign In:
             <input type='text' name='email' id='email' placeholder='Email'>
             <input type='password' name='password' id='password' placeholder='Password'>
-            <input type='submit' name='submit' placeholder="Login">
+            <input type='submit' name='submit' placeholder="submit">
         </form>
+		</div>
 		<form method="POST" action="/temperature">
-			Zip Code :
+			What's the Weather Today? :
             <input type="text" name="zip">
 			<input type="submit">
-		</form>
+		</form></center>
 	</body>
 </html>
