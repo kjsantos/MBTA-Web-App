@@ -1,0 +1,11 @@
+We used the MBTA API to retreive the name of every stop in Boston an its ID. I then stores these name-ID pairs in the database, which acts as our cache.
+We then prompt the user to enter the name of the stop that he would like to see the time to and looked up its ID in the cache. From there, we
+made another call to the MBTA API with the id of the stop and it returned to us the time of the next arrivals.
+
+
+JSON SCHEMA:
+
+{
+"name" : the name of the stop, e.g. Kenmore
+"id" : Unique ID of the stop used to identify it in the API, e.g. 765647
+}
