@@ -30,7 +30,7 @@ def temperature():
     location = (json_object['name'])
     return render_template('temperature.html', temp=temp_f, humidity=humid,name=location, high=temp_highf, low=temp_lowf,description=weather)
 
-@app.route('/register', methods=['POST', 'GET'])
+'''@app.route('/register', methods=['POST', 'GET'])
 def register_user():
     try:
         email=request.form.get('email')
@@ -54,21 +54,53 @@ def register_user():
         return render_template('index.html')
     else:
         print ("couldn't find all tokens")
-        return flask.redirect(flask.url_for('register'))
+        return flask.redirect(flask.url_for('register'))'''
 
 from flask.ext.cache import Cache
+
 cache = Cache(app, config={'CACHE_TYPE': 'simple'})
+
 
 @cache.cached(timeout=50, key_prefix='api_call')
 def call_routes():
     r = requests.get('https://api-v3.mbta.com/stops')
     stops = r.json()['data']
-    for i in stops:
-        data = i['attributes']
+    i = 0
+    stops_db = mongo.db.stops
+    for stop in stops:
+        i += 1
+        stops_db.insert({"name": stop["attributes"]["name"], "id": stop["id"]})
+
 
 @app.route('/')
 def index():
-	return render_template('index.html')
+    return render_template('enter_ZIP.html')
+
+
+@app.route("/time", methods=["GET", "POST"])
+def time():
+    if request.method == "POST":
+        stop_name = request.form["stop_name"]
+        stops = mongo.db.stops
+        stop_id = stops.find_one({"name": stop_name})
+        if stop_id is not None:
+            r = requests.get("https://api-v3.mbta.com//predictions?filter[stop]=" + stop_id["id"])
+            arrival_times = r.json()
+            n = 0
+            arr_times = []
+            for time in arrival_times["data"]:
+                exact_time = time["attributes"]["arrival_time"]
+                if exact_time is not None:
+                    exact_time = str(exact_time)
+                    print(exact_time[11:19])
+                    n += 1
+                    arr_times.append(exact_time[11:19])
+                if n == 2:
+                    break
+        else:
+            arr_times = ["-", "-"]
+    return render_template("time.html", arrival_times=arr_times)
+
 
 if __name__ == '__main__':
     app.run(debug=True)
