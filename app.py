@@ -30,31 +30,10 @@ def temperature():
     location = (json_object['name'])
     return render_template('temperature.html', temp=temp_f, humidity=humid,name=location, high=temp_highf, low=temp_lowf,description=weather)
 
-'''@app.route('/register', methods=['POST', 'GET'])
-def register_user():
-    try:
-        email=request.form.get('email')
-        password=request.form.get('password')
-        firstname=request.form.get('fname')
-        lastname=request.form.get('lname')
-    except:
-        print ("couldn't find all tokens")
-        #this prints to shell, end users will not see this (all print statements go to shell)
-        return flask.redirect(flask.url_for('register'))
 
-    cursor = conn.cursor()
-    test =  isEmailUnique(email)
-    if test:
-        print (cursor.execute("INSERT INTO Users (email, password, firstname, lastname) VALUES ('{0}', '{1}', '{2}', '{3}',)".format(email, password, firstname, lastname)))
-        conn.commit()
-        #log user in
-        user = User()
-        user.id = email
-        flask_login.login_user(user)
-        return render_template('index.html')
-    else:
-        print ("couldn't find all tokens")
-        return flask.redirect(flask.url_for('register'))'''
+@app.route('/register', methods=['POST', 'GET'])
+def register():
+    return render_template('register.html')
 
 from flask.ext.cache import Cache
 
@@ -74,10 +53,11 @@ def call_routes():
 
 @app.route('/')
 def index():
-    stops_db = mongo.db.stops
-    if stops_db.find_one() is None:
-        call_routes()
-    return render_template('enter_ZIP.html')
+    return render_template('index.html')
+
+@app.route('/profile')
+def profile():
+    return render_template('profile.html')
 
 
 @app.route("/time", methods=["GET", "POST"])
@@ -103,6 +83,14 @@ def time():
         else:
             arr_times = ["-", "-"]
     return render_template("time.html", arrival_times=arr_times)
+
+@app.route("/enter_zip")
+def enter_zip():
+    return render_template("enter_zip.html")
+
+@app.route("/weather")
+def weather():
+    return render_template("weather.html")
 
 
 if __name__ == '__main__':
