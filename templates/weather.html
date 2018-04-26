@@ -1,14 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link rel="stylesheet" href="static/mystyle.css">
     <meta charset="UTF-8">
     <title>What's the weather?</title>
 </head>
-<body>
-    <form method="POST" action="/temperature">
-        What's the Weather Today? :
-            <input type="text" name="zip">
-			<input type="submit">
-    </form>
+<body style = "background:url(static/temp.jpg);background-repeat:no-repeat;background-size:1400px 750px">
+    <div class = "transbox2">
+        <center><form method="POST" action="/temperature">
+            <h4>What's the Weather Today in:</h4>
+                <p><input type="text" name="zip">
+			    <input type="submit">
+        </form>
+        </center>
+    </div>
 </body>
 </html>

@@ -19,12 +19,27 @@ div.transbox {
   margin: 20px;
   background-color: #ffffff;
   border: 1px solid black;
-  opacity: 0.75;
+  opacity: 0.80;
   filter: alpha(opacity=65); /* For IE8 and earlier */
 }
 
 div.transbox p {
   padding: 10;
+  margin: 1%;
+  font-weight: bold;
+  color: #000000;
+}
+
+div.transbox2 {
+  margin: 0px;
+  background-color: #ffffff;
+  border: 1px solid black;
+  opacity: 0.80;
+  filter: alpha(opacity=65); /* For IE8 and earlier */
+}
+
+div.transbox2 p {
+  padding: 50;
   margin: 1%;
   font-weight: bold;
   color: #000000;
@@ -37,4 +52,8 @@ h3 {
 
 div.a {
     font-family: "Times New Roman", Times, serif;
+}
+
+h1 {
+    font-size: 20px;
 }

@@ -4,15 +4,17 @@
 		<title>Current Temperature</title>
         <link rel = "stylesheet" href = "static/mystyle.css" type = "text/css" />
 	</head>
-<body>
-<center><h1> The current temperature in {{ name }} is {{ temp }} degrees F
-    <p></p>
-Humidity: {{ humidity }}%
-    <p></p>
-Weather Conditions: {{ description }}
-    <p></p>
-Today's high will be: {{ high }} degrees F
-    <p></p>
-    Today's low will be: {{ low }} degrees F</h1></center>
+<body style = "background:url(static/street.jpg);background-repeat:no-repeat;background-size:100% 100%">
+    <div class="transbox">
+        <center><h1> The current temperature in {{ name }} is {{ temp }} degrees F
+            <p></p>
+            Humidity: {{ humidity }}%
+            <p></p>
+            Weather Conditions: {{ description }}
+            <p></p>
+            Today's high will be: {{ high }} degrees F
+            <p></p>
+            Today's low will be: {{ low }} degrees F</h1></center>
+    </div>
 </body>
 </html>
