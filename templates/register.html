@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel="stylesheet" href="static/style.css">
+    <link rel="stylesheet" href="static/mystyle.css">
     <meta charset="UTF-8">
     <title>Create new account</title>
 </head>
 <body>
-        <h3>Register New User</h3>
+    <div class = "transbox">
+        <center><h3>Register New User</h3>
         {% if errmessage %}
             <p class="errmessage">{{ errmessage }}</p>
         {% endif %}
@@ -24,18 +25,19 @@
                     <tr>
                         <td><label for="fname">First Name:</label></td>
                         <td><input type="text" name="fname" value="{% if fields %}{{ fields.fname }}{% endif %}"/></td>
-                    </tr>
-                    <tr>
-                        <td><label for="lname">Last Name:</label></td>
-                        <td><input type="text" name="lname" value="{% if fields %}{{ fields.lname }}{% endif %}"/></td>
-                    </tr>
-                </table>
-                <input type="submit" value="Submit"/>
-            </form>
-            <p><a href='/'>Home</a></p>
-            <p>Already have an account? Login <a href="/">here</a></p>
+                     </tr>
+                     <tr>
+                         <td><label for="lname">Last Name:</label></td>
+                         <td><input type="text" name="lname" value="{% if fields %}{{ fields.lname }}{% endif %}"/></td>
+                     </tr>
+                    </table>
+                    <input type="submit" value="Submit"/>
+                </form>
+                <p><a href='/'>Home</a></p>
+                <p>Already have an account? Login <a href="/">here</a></p>
+            </div></center>
         </div>
-    </div>
+    <div class="bg"></div>
 </body>
 </html>
 

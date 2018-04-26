@@ -1,17 +1,40 @@
-body {
+body, html {
+    height: 100%;
+}
 
+.bg {
+    /* The image used */
+    background-image: url("green-line.jpg");
+
+    /* Full height */
+    height: 100%;
+
+    /* Center and scale the image nicely */
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
 }
 
 div.transbox {
-  margin: 30px;
+  margin: 20px;
   background-color: #ffffff;
   border: 1px solid black;
-  opacity: 0.7;
-  filter: alpha(opacity=60); /* For IE8 and earlier */
+  opacity: 0.75;
+  filter: alpha(opacity=65); /* For IE8 and earlier */
 }
 
 div.transbox p {
-  margin: 5%;
+  padding: 10;
+  margin: 1%;
   font-weight: bold;
   color: #000000;
+}
+
+h3 {
+    font-size: 25px;
+    text-decoration: underline;
+}
+
+div.a {
+    font-family: "Times New Roman", Times, serif;
 }
