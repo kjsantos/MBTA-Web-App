@@ -1,20 +1,87 @@
 <html>
-	<head>
+	<head><link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" type="text/css">
+  <script src="https://apis.google.com/js/api:client.js"></script>
+  
         <meta charset="UTF-8">
 		<title>Let's MBTA!</title>
         <link rel = "stylesheet" href = "static/mystyle.css" type = "text/css" />
 	</head>
 	<body background="static/map.jpg">
-        <div class = "transbox">
-            <h1><center>Let's MBTA!</center></h1>
-            <center><form action="login" action="POST">
-                Sign In:
-                <input type='text' name='email' id='email' placeholder='Email'>
-                <input type='password' name='password' id='password' placeholder='Password'>
-                <input type='submit' name='submit' placeholder="submit">
-            </form>
-                <p>Don't have an account? Create one <a href="register">here.</a></p>
-            </center>
-        </div>
+        <h1><center>Let's MBTA!</center></h1>
+        <center><form action="login" action="POST">
+            Sign In:
+            <input type='text' name='email' id='email' placeholder='Email'>
+            <input type='password' name='password' id='password' placeholder='Password'>
+            <input type='submit' name='submit' placeholder="submit"><script>
+  			var googleUser = {};
+  			var startApp = function() {
+    			gapi.load('auth2', function(){
+      // Retrieve the singleton for the GoogleAuth library and set up the client.
+      			auth2 = gapi.auth2.init({
+        		client_id: '330611779338-0s48on9c1o9q4lkmqsjn3999amhig7am.apps.googleusercontent.com',
+        		cookiepolicy: 'single_host_origin',
+        // Request scopes in addition to 'profile' and 'email'
+        //scope: 'additional_scope'
+      			});
+      			attachSignin(document.getElementById('customBtn'));
+    		});
+  		};
+
+  			function attachSignin(element) {
+    		console.log(element.id);
+    		auth2.attachClickHandler(element, {},
+        	function(googleUser) {
+          		document.getElementById('name').innerText = "Signed in: " +
+              	googleUser.getBasicProfile().getName();
+        	}, 
+        	function(error) {
+          alert(JSON.stringify(error, undefined, 2));
+        });
+  }
+  		</script>
+  		<style type="text/css">
+    
+    		#customBtn:hover {
+      		cursor: pointer;
+    	}
+    		span.label {
+      		font-family: serif;
+      		font-weight: normal;
+    	}
+    		span.icon {
+      		background: url('https://order.pizzahut.com.ph//assets/images/google-plus-icon.png') transparent 5px 50% no-repeat;
+      		display: inline-block;
+      		vertical-align: middle;
+      		width: 100px;
+      height: 100px;
+    }
+    
+  </style>
+  </head>
+  <body>
+  <!-- In the callback, you would hide the gSignInWrapper element on a
+  successful sign in -->
+  <div id="gSignInWrapper">
+    
+    <div id="customBtn" class="customGPlusSignIn">
+      <span class="icon"></span>
+      
+    </div>
+  </div>
+  <div id="name"></div>
+  <script>startApp();</script>
+        </form>
+             <p>Don't have an account? Create one <a href="register">here.</a></p>
+		</div>
+        </center>
+        <a href="#" onclick="signOut();">Sign out</a>
+<script>
+  function signOut() {
+    var auth2 = gapi.auth2.getAuthInstance();
+    auth2.signOut().then(function () {
+      console.log('User signed out.');
+    });
+  }
+</script>
 	</body>
 </html>
