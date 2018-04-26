@@ -1,5 +1,5 @@
 <html>
-	<head><link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" type="text/css">
+{#	<head><link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" type="text/css">#}
   <script src="https://apis.google.com/js/api:client.js"></script>
   
         <meta charset="UTF-8">
@@ -7,7 +7,7 @@
         <link rel = "stylesheet" href = "static/mystyle.css" type = "text/css" />
 	</head>
 	<body background="static/map.jpg">
-        <h1><center>Let's MBTA!</center></h1>
+        <div class = "transbox"><h1><center>Let's MBTA!</center></h1>
         <center><form action="login" action="POST">
             Sign In:
             <input type='text' name='email' id='email' placeholder='Email'>
@@ -49,7 +49,7 @@
       		font-weight: normal;
     	}
     		span.icon {
-      		background: url('https://order.pizzahut.com.ph//assets/images/google-plus-icon.png') transparent 5px 50% no-repeat;
+      		background: url('https://order.pizzahut.com.ph//assets/images/google-plus-icon.png') transparent 10px 50% no-repeat;
       		display: inline-block;
       		vertical-align: middle;
       		width: 100px;
@@ -72,10 +72,10 @@
   <script>startApp();</script>
         </form>
              <p>Don't have an account? Create one <a href="register">here.</a></p>
-		</div>
         </center>
-        <a href="#" onclick="signOut();">Sign out</a>
+            <center><a href="#" onclick="signOut();">Sign out</a></center>
 <script>
+    </div>
   function signOut() {
     var auth2 = gapi.auth2.getAuthInstance();
     auth2.signOut().then(function () {
