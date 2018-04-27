@@ -2,6 +2,7 @@ import flask
 from flask import Flask, render_template, request
 from flask_pymongo import PyMongo
 import requests
+import flask.ext.cache as flask_cache
 
 
 app = Flask(__name__)
@@ -35,7 +36,7 @@ def temperature():
 def register():
     return render_template('register.html')
 
-from flask.ext.cache import Cache
+from flask_cache import Cache
 
 cache = Cache(app, config={'CACHE_TYPE': 'simple'})
 
