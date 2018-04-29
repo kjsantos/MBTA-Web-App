@@ -5,16 +5,19 @@
     <title>enter_Stop.html</title>
     <meta charset = "UTF-8" />
   </head>
-  <body>
+    <body style = "background:url(static/time.png);background-repeat:no-repeat;background-size:1400px 750px">
+    <div class = "transbox">
     <h1>These are the next two arrival times:</h1>
     {% if arrival_times[0] == "-" %}
         <p> You have entered an invalid stop. Please try again.</p>
-         <form method="GET" action="/">
-         <input class="btn btn-primary" type="submit" value="Go back to start">
          </form>
     {% else %}
         <p><b> {{arrival_times[0]}}</p>
         <p>{{arrival_times[1]}} </p>
     {% endif %}
+    <form method="GET" action="/home">
+    <input class="btn btn-primary" type="submit" value="Put in a Different Stop">
+        <p></p>
+    </div>
     </body>
 </html>

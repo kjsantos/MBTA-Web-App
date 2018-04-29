@@ -1,15 +1,15 @@
+
 import flask
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, url_for
 from flask_pymongo import PyMongo
 import requests
-import flask.ext.cache as flask_cache
 
-
+global user
 app = Flask(__name__)
 app.debug = True
 app.secret_key = 'ThisSux'
-app.config["MONGO_DBNAME"] = "MBTAData"
-app.config["MONGO_URI"] = "mongodb://localhost/27017"
+app.config["MONGO_DBNAME"] = "27107"
+app.config["MONGO_URI"] = "mongodb://localhost:27017"
 
 mongo = PyMongo(app)
 #oauth = OAuth.app
@@ -32,16 +32,6 @@ def temperature():
     return render_template('temperature.html', temp=temp_f, humidity=humid,name=location, high=temp_highf, low=temp_lowf,description=weather)
 
 
-@app.route('/register', methods=['POST', 'GET'])
-def register():
-    return render_template('register.html')
-
-from flask_cache import Cache
-
-cache = Cache(app, config={'CACHE_TYPE': 'simple'})
-
-
-@cache.cached(timeout=50, key_prefix='api_call')
 def call_routes():
     r = requests.get('https://api-v3.mbta.com/stops')
     stops = r.json()['data']
@@ -54,11 +44,66 @@ def call_routes():
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    stops = mongo.db.stops
+    if stops.find_one() is None:
+        call_routes()
+    return render_template('login.html')
 
 @app.route('/profile')
 def profile():
     return render_template('profile.html')
+
+
+
+@app.route("/register", methods = ["GET", "POST"])
+def register():
+    if request.method == "POST":
+        email = request.form["email"] #this gets the email value from the html files
+        password = request.form["password"]
+        fname = request.form["fname"]
+        lname = request.form["lname"]
+        users = mongo.db.users      #mongo.db accesess the db we're currently using
+                                    #.users specifies/creates the collection we'll be writing into
+
+        exists = users.find_one({"email": email})       #finds an entry with "email" key equal to variable email
+                                                        #otherwise returns None
+
+        if exists is not None:
+            error_msg = "User email already registered"
+            return redirect(url_for("reg_error", err_msg = error_msg, redirect_url ="/register"))
+        else:
+            users.insert({"email": email, "password": password, "fname": fname, "lname": lname})
+            return redirect(url_for("home"))
+    else:
+        return render_template('register.html')
+
+
+
+@app.route("/error")
+def reg_error():
+    red_url = request.args["redirect_url"]
+    error_msg = request.args["err_msg"]
+    return render_template("error.html", e_msg = error_msg, redirect_url = red_url)
+
+
+@app.route("/check_login", methods=["POST"])
+def check_login():
+    email = request.form["email"]
+    password = request.form["password"]
+
+    users = mongo.db.users
+    exists = users.find_one({"email": email, "password": password})
+    if exists is None:
+        error_msg = "You have entered an incorrect username/password."
+        return redirect(url_for("reg_error", err_msg=error_msg,redirect_url="/" ))
+    else:
+        global user
+        user = email
+        return redirect(url_for("profile"))
+
+@app.route("/logout")
+def logout():
+    return render_template("logout.html")
 
 
 @app.route("/time", methods=["GET", "POST"])
@@ -81,13 +126,21 @@ def time():
                     arr_times.append(exact_time[11:19])
                 if n == 2:
                     break
+            users = mongo.db.users
+            users.update({"email":user},{"$set":{"stop": stop_name,"id": stop_id}})
         else:
             arr_times = ["-", "-"]
     return render_template("time.html", arrival_times=arr_times)
 
-@app.route("/enter_zip")
-def enter_zip():
-    return render_template("enter_zip.html")
+@app.route("/home")
+def home():
+    global user
+    users = mongo.db.users
+    stop = users.find_one({"email":user, "stop":{"$exists":"true"}, "id":{"$exists":"true"}})
+
+    if stop is not None:
+        return render_template("home.html",stop = stop["stop"] )
+    return render_template("home.html", stop = stop)
 
 @app.route("/weather")
 def weather():

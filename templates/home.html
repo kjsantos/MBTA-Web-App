@@ -1,0 +1,31 @@
+<!DOCTYPE HTML>
+<html lang = "en">
+  <head>
+      <link href = "static/mystyle.css" rel="stylesheet">
+    <title>MBTA Stop</title>
+    <meta charset = "UTF-8" />
+  </head>
+<body style = "background:url(static/west.jpg);background-repeat:no-repeat;background-size:1400px 750px">
+    <center><div class = "transbox2">
+        <h1>Find how long it will take you to get to a stop!</h1>
+            <label>Enter the name of the stop:</label>
+            <form method="POST" action="/time">
+             <div class="form-group">
+            <input type = "text" name = "stop_name">
+             </div>
+            <input class="btn btn-primary" type="submit" value="Go">
+             </form>
+        <p><h10>For Bus Stops *** Abbreviate cardinal directions with their first letter, e.g. <b> N Beacon </b> instead of <b> North Beacon </b>. Use <b>St, Rd</b> instead of <b>street, road</b>, and use <b>@, opp</b> to replace <b>at, opposite</b></h10>
+        <p><h10>For T Stops *** Type in the exact name of the T stop with everything spelled out correctly</p></h10>
+            {% if stops != None %}
+             <form method="POST" action="/time">
+             Last viewed stop:
+             <input class="btn btn-primary" type="submit" value={{stop}} name ="stop_name">
+             </form>
+            {% else %}
+     <p></p>
+            {% endif %}
+    <p><a href='/profile'>Home</a></p>
+    </div></center>
+  </body>
+</html>
