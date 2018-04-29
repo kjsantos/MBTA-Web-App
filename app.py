@@ -1,8 +1,10 @@
 import flask
-from flask import Flask, render_template, request
+from flask import Flask, render_template
 from flask_pymongo import PyMongo
+from flask_googlemaps import GoogleMaps
+from flask_googlemaps import Map, icons
 import requests
-import flask.ext.cache as flask_cache
+import flask_cache
 
 
 app = Flask(__name__)
@@ -10,6 +12,7 @@ app.debug = True
 app.secret_key = 'ThisSux'
 app.config["MONGO_DBNAME"] = "MBTAData"
 app.config["MONGO_URI"] = "mongodb://localhost/27017"
+app.config["GOOGLE_MAPS_API_KEY"] = "AIzaSyCIwN3YqgnC36MtRsx5-RhZhoBSKeUn0gY"
 
 mongo = PyMongo(app)
 #oauth = OAuth.app
@@ -92,6 +95,10 @@ def enter_zip():
 @app.route("/weather")
 def weather():
     return render_template("weather.html")
+
+@app.route('/test_coordinates', methods=["POST", "GET"])
+def coords():
+    return render_template('test_coordinates.html')
 
 
 if __name__ == '__main__':
