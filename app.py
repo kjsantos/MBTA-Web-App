@@ -25,7 +25,7 @@ app.config["GOOGLE_MAPS_API_KEY"] = "AIzaSyCIwN3YqgnC36MtRsx5-RhZhoBSKeUn0gY"
 mongo = PyMongo(app)
 app.secret_key = 'development'
 oauth = OAuth(app)
-
+user = ""
 google = oauth.remote_app(
     'google',
     consumer_key=app.config.get('GOOGLE_ID'),
@@ -145,10 +145,11 @@ def authorized():
       request.args['error_description']
     )
   session['google_token'] = (resp['access_token'], '')
-  me = google.get('userinfo')
-  jsonify({"data": me.data})
-  return render_template("profile.html")
-  return jsonify({"data": me.data})
+  user = google.get('userinfo')
+  jsonify({"data": user.data})
+  return redirect(url_for("profile"))
+  # return render_template("profile.html")
+  # return jsonify({"data": user.data})
 
 @google.tokengetter
 def get_google_oauth_token():
@@ -191,7 +192,6 @@ def home():
     global user
     users = mongo.db.users
     stop = users.find_one({"email":user, "stop":{"$exists":"true"}, "id":{"$exists":"true"}})
-
     if stop is not None:
         return render_template("home.html",stop = stop["stop"] )
     return render_template("home.html", stop = stop)
@@ -199,10 +199,6 @@ def home():
 @app.route("/weather")
 def weather():
     return render_template("weather.html")
-
-@app.route("/enter_zip")
-def enter_zip():
-    return render_template("enter_zip.html")
 
 
 @app.route('/destination', methods=["POST", "GET"])
