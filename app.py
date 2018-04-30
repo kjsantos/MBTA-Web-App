@@ -1,15 +1,32 @@
 
 import flask
+<<<<<<< HEAD
 from flask import Flask, render_template, request, redirect, url_for
+=======
+from flask import Flask, render_template
+>>>>>>> e469fa91e00246d40803ab221904a70b21a489c3
 from flask_pymongo import PyMongo
+from flask_googlemaps import GoogleMaps
+from flask_googlemaps import Map, icons
 import requests
+<<<<<<< HEAD
+=======
+import flask_cache
+
+>>>>>>> e469fa91e00246d40803ab221904a70b21a489c3
 
 global user
 app = Flask(__name__)
 app.debug = True
 app.secret_key = 'ThisSux'
+<<<<<<< HEAD
 app.config["MONGO_DBNAME"] = "27107"
 app.config["MONGO_URI"] = "mongodb://localhost:27017"
+=======
+app.config["MONGO_DBNAME"] = "MBTAData"
+app.config["MONGO_URI"] = "mongodb://localhost/27017"
+app.config["GOOGLE_MAPS_API_KEY"] = "AIzaSyCIwN3YqgnC36MtRsx5-RhZhoBSKeUn0gY"
+>>>>>>> e469fa91e00246d40803ab221904a70b21a489c3
 
 mongo = PyMongo(app)
 #oauth = OAuth.app
@@ -145,6 +162,10 @@ def home():
 @app.route("/weather")
 def weather():
     return render_template("weather.html")
+
+@app.route('/test_coordinates', methods=["POST", "GET"])
+def coords():
+    return render_template('test_coordinates.html')
 
 
 if __name__ == '__main__':
