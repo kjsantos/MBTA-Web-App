@@ -1,35 +1,44 @@
-
 import flask
-<<<<<<< HEAD
-from flask import Flask, render_template, request, redirect, url_for
-=======
-from flask import Flask, render_template
->>>>>>> e469fa91e00246d40803ab221904a70b21a489c3
+from flask import Flask, render_template, request, redirect, url_for, session, request, jsonify
 from flask_pymongo import PyMongo
 from flask_googlemaps import GoogleMaps
 from flask_googlemaps import Map, icons
 import requests
-<<<<<<< HEAD
-=======
 import flask_cache
+from flask_oauthlib.client import OAuth
 
->>>>>>> e469fa91e00246d40803ab221904a70b21a489c3
+
 
 global user
+
 app = Flask(__name__)
+
+app.config['GOOGLE_ID'] = "330611779338-0s48on9c1o9q4lkmqsjn3999amhig7am.apps.googleusercontent.com"
+app.config['GOOGLE_SECRET'] = "tcSSLyTOKA422cXEbknlTvpr"
 app.debug = True
 app.secret_key = 'ThisSux'
-<<<<<<< HEAD
-app.config["MONGO_DBNAME"] = "27107"
-app.config["MONGO_URI"] = "mongodb://localhost:27017"
-=======
-app.config["MONGO_DBNAME"] = "MBTAData"
+app.config["MONGO_DBNAME"] = "27017"
 app.config["MONGO_URI"] = "mongodb://localhost/27017"
 app.config["GOOGLE_MAPS_API_KEY"] = "AIzaSyCIwN3YqgnC36MtRsx5-RhZhoBSKeUn0gY"
->>>>>>> e469fa91e00246d40803ab221904a70b21a489c3
+
 
 mongo = PyMongo(app)
-#oauth = OAuth.app
+app.secret_key = 'development'
+oauth = OAuth(app)
+
+google = oauth.remote_app(
+    'google',
+    consumer_key=app.config.get('GOOGLE_ID'),
+    consumer_secret=app.config.get('GOOGLE_SECRET'),
+    request_token_params={
+        'scope': 'email'
+    },
+    base_url='https://www.googleapis.com/oauth2/v1/',
+    request_token_url=None,
+    access_token_method='POST',
+    access_token_url='https://accounts.google.com/o/oauth2/token',
+    authorize_url='https://accounts.google.com/o/oauth2/auth',
+)
 
 @app.route('/temperature', methods=['POST'])
 def temperature():
@@ -38,7 +47,6 @@ def temperature():
     json_object = r.json()
     temp_k = float(json_object['main']['temp'])
     temp_f = round(((temp_k - 273.15) * 1.8 + 32),1)
-    #condition = (json_object(['weather']))
     temp_highk = float(json_object['main']['temp_max'])
     temp_highf = round(((temp_highk - 273.15) * 1.8 + 32),1)
     temp_lowk = float(json_object['main']['temp_min'])
@@ -64,7 +72,15 @@ def index():
     stops = mongo.db.stops
     if stops.find_one() is None:
         call_routes()
-    return render_template('login.html')
+    if 'google_token' in session:
+        me = google.get('userinfo')
+        return jsonify({"data": me.data})
+    return render_template('index.html')
+
+@app.route('/login')
+def login():
+    google.authorize(callback=url_for('authorized', _external=True))
+    return render_template('profile.html')
 
 @app.route('/profile')
 def profile():
@@ -118,9 +134,30 @@ def check_login():
         user = email
         return redirect(url_for("profile"))
 
-@app.route("/logout")
+
+@google.authorized_handler
+@app.route('/login/authorized')
+def authorized():
+  resp = google.authorized_response()
+  if resp is None:
+    return 'Access denied: reason=%s error=%s' % (
+      request.args['error_reason'],
+      request.args['error_description']
+    )
+  session['google_token'] = (resp['access_token'], '')
+  me = google.get('userinfo')
+  jsonify({"data": me.data})
+  return render_template("profile.html")
+  return jsonify({"data": me.data})
+
+@google.tokengetter
+def get_google_oauth_token():
+    return session.get('google_token')
+
+@app.route('/logout')
 def logout():
-    return render_template("logout.html")
+    session.pop('google_token', None)
+    return render_template('logout.html')
 
 
 @app.route("/time", methods=["GET", "POST"])
@@ -163,9 +200,14 @@ def home():
 def weather():
     return render_template("weather.html")
 
-@app.route('/test_coordinates', methods=["POST", "GET"])
+@app.route("/enter_zip")
+def enter_zip():
+    return render_template("enter_zip.html")
+
+
+@app.route('/destination', methods=["POST", "GET"])
 def coords():
-    return render_template('test_coordinates.html')
+    return render_template('destination.html')
 
 
 if __name__ == '__main__':

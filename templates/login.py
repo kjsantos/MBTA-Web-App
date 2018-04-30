@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Apr 18 18:12:26 2018
-
-@author: elcha
-"""
-
 from flask import Flask, redirect, url_for, session, request, jsonify
 from flask_oauthlib.client import OAuth
 
@@ -36,12 +29,13 @@ def index():
     if 'google_token' in session:
         me = google.get('userinfo')
         return jsonify({"data": me.data})
-    return redirect(url_for('login'))
+    return redirect(url_for('profile'))
 
 
 @app.route('/login')
 def login():
     return google.authorize(callback=url_for('authorized', _external=True))
+    return redirect(url_for('profile'))
 
 
 @app.route('/logout')

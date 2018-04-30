@@ -1,7 +1,8 @@
 <html>
 {#	<head><link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" type="text/css">#}
   <script src="https://apis.google.com/js/api:client.js"></script>
-  
+    <meta name="google-signin-client_id" content='330611779338-0s48on9c1o9q4lkmqsjn3999amhig7am.apps.googleusercontent.com'>
+
         <meta charset="UTF-8">
 		<title>Let's MBTA!</title>
         <link rel = "stylesheet" href = "static/mystyle.css" type = "text/css" />
@@ -19,27 +20,34 @@
       // Retrieve the singleton for the GoogleAuth library and set up the client.
       			auth2 = gapi.auth2.init({
         		client_id: '330611779338-0s48on9c1o9q4lkmqsjn3999amhig7am.apps.googleusercontent.com',
+                client_secret: 'tcSSLyTOKA422cXEbknlTvpr',
         		cookiepolicy: 'single_host_origin',
         // Request scopes in addition to 'profile' and 'email'
         //scope: 'additional_scope'
       			});
-      			attachSignin(document.getElementById('customBtn'));
+      	attachSignin(document.getElementById('customBtn'));
     		});
   		};
 
-  			function attachSignin(element) {
+  		function attachSignin(element) {
     		console.log(element.id);
     		auth2.attachClickHandler(element, {},
-        	function(googleUser) {
-          		document.getElementById('name').innerText = "Signed in: " +
-              	googleUser.getBasicProfile().getName();
+        	    function(googleUser) {
+          		    document.getElementById('name').innerText = "Signed in: " +
+              	        googleUser.getBasicProfile().getName();
         	}, 
-        	function(error) {
-          alert(JSON.stringify(error, undefined, 2));
+        	        function(error) {
+                    alert(JSON.stringify(error, undefined, 2));
         });
   }
   		</script>
   		<style type="text/css">
+            {
+            background: white;
+            width: 190px;
+            border-raidus: 5px;
+            white-space: nowrap;
+            }
     
     		#customBtn:hover {
       		cursor: pointer;
@@ -74,7 +82,7 @@
         </form>
              <p>Don't have an account? Create one <a href="register">here.</a></p>
         </center>
-            <center><a href="#" onclick="signOut();">Sign out</a></center>
+            <center><a href="#" onclick="signOut();">Logout</a></center>
 <script>
     </div>
   function signOut() {
