@@ -1,0 +1,6 @@
+	We used flask, mongodb, and html templates for our web app. We used google for our oauth and got most of our code to do this from python 
+  tutorials. We made html templates for our app to call as the user would go from page to page. Once the user logs in or registers he/she 
+  will be directed to our profile page where the user can look up the weather, T times based on T stops, and directions to your destination.
+  If the user clicks on weather the user is brought to our weather page that asks for the location you want the weather for. If the user 
+  checks on when the next T is the user is directed to a page to insert the wanted T stop and the next two time for that particular T stop 
+  will pop up. And for destination it will tell you how long it will take to reach that T stop and what T to take.
