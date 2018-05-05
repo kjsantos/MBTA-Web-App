@@ -1,4 +1,9 @@
-	We used flask, mongodb, and html templates for our web app. We used twitter for our oauth and got most of our code to do this from python 
-  tutorials. We made html templates for our app to call as the user would go from page to page and CSS to style the pages.  Once the user logs in or registers he/she 
-  will be directed to our home page where the user can look up a specific T stop or bus stop. After entering the stop, it will redirect you to our time page which will show the next two arrival times.
-  If the user clicks on weather the user is brought to our weather page which shows the weather for Boston. We originally had an option to check the weather conditions for any zip code but thought this wasn't useful since only someone in Boston would use this app. 
+	We used flask, mongodb, and html templates for our web app. We used twitter for our oauth and 
+	got most of our code to do this from python 
+  tutorials. We made html templates for our app to call as the user would go from page to
+  page and CSS to style the pages.  Once the user logs in or registers he/she 
+  will be directed to our home page where the user can look up a specific T stop or bus stop. 
+  After entering the stop, it will redirect you to our time page which will show the next two arrival times.
+  If the user clicks on weather the user is brought to our weather page which shows the weather for Boston.
+  We originally had an option to check the weather conditions for any zip code but 
+  thought this wasn't useful since only someone in Boston would use this app. 
