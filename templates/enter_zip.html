@@ -1,0 +1,19 @@
+<!DOCTYPE HTML>
+<html lang = "en">
+  <head>
+      <link href = "static/mystyle.css" rel="stylesheet">
+    <title>enter_Stop.html</title>
+    <meta charset = "UTF-8" />
+  </head>
+  <body>
+    <h1>Find how long it will take you to get to a stop!</h1>
+	<p> Abbreviate cardinal directions with their first letter, e.g. <b> N Beacon </b> instead of <b> North Beacon </b>. Use <b>St, Rd</b> instead of <b>street, road</b>, and use <b>@, opp</b> to replace <b>at, opposite</b>
+          <label>Enter the name of the stop:</label>
+          <form method="POST" action="/time">
+            <div class="form-group">
+          <input type = "text" name = "stop_name">
+        </div>
+        <input class="btn btn-primary" type="submit" value="submit">
+         </form>
+     </body>
+</html>

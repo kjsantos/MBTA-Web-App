@@ -1,48 +1,120 @@
 import flask
-from flask import Flask, render_template, request, redirect, url_for, session, request, jsonify
+from flask import g, Flask, render_template, request, redirect, url_for, session, flash
 from flask_pymongo import PyMongo
-from flask_googlemaps import GoogleMaps
-from flask_googlemaps import Map, icons
 import requests
-import flask_cache
 from flask_oauthlib.client import OAuth
 
-
-
+global logged_in
 global user
 
-app = Flask(__name__)
 
-app.config['GOOGLE_ID'] = "330611779338-0s48on9c1o9q4lkmqsjn3999amhig7am.apps.googleusercontent.com"
-app.config['GOOGLE_SECRET'] = "tcSSLyTOKA422cXEbknlTvpr"
+
+
+#sets up the app
+app = Flask(__name__)
 app.debug = True
 app.secret_key = 'ThisSux'
-app.config["MONGO_DBNAME"] = "27017"
+app.config["MONGO_DBNAME"] = "MBTAData"
 app.config["MONGO_URI"] = "mongodb://localhost/27017"
-app.config["GOOGLE_MAPS_API_KEY"] = "AIzaSyCIwN3YqgnC36MtRsx5-RhZhoBSKeUn0gY"
-
-
 mongo = PyMongo(app)
-app.secret_key = 'development'
-oauth = OAuth(app)
-user = ""
-google = oauth.remote_app(
-    'google',
-    consumer_key=app.config.get('GOOGLE_ID'),
-    consumer_secret=app.config.get('GOOGLE_SECRET'),
-    request_token_params={
-        'scope': 'email'
-    },
-    base_url='https://www.googleapis.com/oauth2/v1/',
-    request_token_url=None,
-    access_token_method='POST',
-    access_token_url='https://accounts.google.com/o/oauth2/token',
-    authorize_url='https://accounts.google.com/o/oauth2/auth',
+
+
+
+oauth = OAuth()
+
+# twitter credentials
+twitter = oauth.remote_app(
+    'twitter',
+    consumer_key='hrqAc6k6pnEiXM9YTBBXe4e7m',
+    consumer_secret='h2qp1UozF4kTLwfkaKyhCBtIarDwSfgg13V6BjWa8nYFhoHN3Y',
+    base_url='https://api.twitter.com/1.1/',
+    request_token_url='https://api.twitter.com/oauth/request_token',
+    access_token_url='https://api.twitter.com/oauth/access_token',
+    authorize_url='https://api.twitter.com/oauth/authorize'
 )
 
-@app.route('/temperature', methods=['POST'])
+
+@twitter.tokengetter
+def get_twitter_token(token=None):
+    return session.get('twitter_token')
+
+
+
+#page where use will login
+@app.route('/')
+def index():
+    stops = mongo.db.stops
+
+    if stops.find_one() is None:
+        call_routes()
+    return render_template('index.html')
+
+
+
+@app.before_request
+def before_request():
+    g.user = None
+    if 'twitter_oauth' in session:
+        g.user = session['twitter_oauth']
+
+
+@app.route('/login')
+def login():
+    return twitter.authorize(callback=url_for('oauth_authorized',
+            next=request.args.get('next') or request.referrer or None))
+
+
+
+@app.route('/logout')
+def logout():
+    global logged_in
+    logged_in = False
+    session.clear()
+    return redirect(url_for('index'))
+
+
+@app.route('/oauth-authorized')
+@twitter.authorized_handler
+def oauth_authorized(resp):
+    next_url = request.args.get('next') or url_for('index')
+    if resp is None:
+        flash(u'You denied the request to sign in.')
+        return redirect(next_url)
+
+    access_token = resp['oauth_token']
+    session['access_token'] = access_token
+    session['screen_name'] = resp['screen_name']
+
+    session['twitter_token'] = (
+        resp['oauth_token'],
+        resp['oauth_token_secret']
+    )
+
+    global user
+    global logged_in
+    logged_in = True
+    user = session['screen_name']
+
+    users = mongo.db.users  # mongo.db accesess the db we're currently using
+    # .users specifies/creates the collection we'll be writing into
+
+    exists = users.find_one({"email": user})
+    # otherwise returns None
+
+    if exists is not None:
+        return redirect(url_for("home"))
+        # return render_template("register_error.html", e_msg = error_msg)
+    else:  # enter it into the db
+        users.insert({"email": user})
+        return redirect(url_for("home"))
+
+
+
+
+
+@app.route('/temperature', methods=["GET", 'POST'])
 def temperature():
-    zipcode = request.form['zip']
+    zipcode = '02134'
     r = requests.get('http://api.openweathermap.org/data/2.5/weather?zip='+zipcode+',us&appid=b0e0bbe93793b39e76cc1b1a65e32369')
     json_object = r.json()
     temp_k = float(json_object['main']['temp'])
@@ -67,20 +139,7 @@ def call_routes():
         stops_db.insert({"name": stop["attributes"]["name"], "id": stop["id"]})
 
 
-@app.route('/')
-def index():
-    stops = mongo.db.stops
-    if stops.find_one() is None:
-        call_routes()
-    if 'google_token' in session:
-        me = google.get('userinfo')
-        return jsonify({"data": me.data})
-    return render_template('index.html')
 
-@app.route('/login')
-def login():
-    google.authorize(callback=url_for('authorized', _external=True))
-    return render_template('profile.html')
 
 @app.route('/profile')
 def profile():
@@ -95,6 +154,12 @@ def register():
         password = request.form["password"]
         fname = request.form["fname"]
         lname = request.form["lname"]
+        '''
+        print(email)
+        print(password)
+        print(fname)
+        print(lname)
+        '''
         users = mongo.db.users      #mongo.db accesess the db we're currently using
                                     #.users specifies/creates the collection we'll be writing into
 
@@ -104,19 +169,19 @@ def register():
         if exists is not None:
             error_msg = "User email already registered"
             return redirect(url_for("reg_error", err_msg = error_msg, redirect_url ="/register"))
-        else:
+            #return render_template("register_error.html", e_msg = error_msg)
+        else: #enter it into the db
             users.insert({"email": email, "password": password, "fname": fname, "lname": lname})
             return redirect(url_for("home"))
     else:
         return render_template('register.html')
 
 
-
-@app.route("/error")
+@app.route("/register_error")
 def reg_error():
     red_url = request.args["redirect_url"]
     error_msg = request.args["err_msg"]
-    return render_template("error.html", e_msg = error_msg, redirect_url = red_url)
+    return render_template("register_error.html", e_msg = error_msg, redirect_url = red_url)
 
 
 @app.route("/check_login", methods=["POST"])
@@ -124,47 +189,26 @@ def check_login():
     email = request.form["email"]
     password = request.form["password"]
 
-    users = mongo.db.users
+    users = mongo.db.users  #gets the collections of users
     exists = users.find_one({"email": email, "password": password})
     if exists is None:
         error_msg = "You have entered an incorrect username/password."
         return redirect(url_for("reg_error", err_msg=error_msg,redirect_url="/" ))
     else:
         global user
+        global logged_in
         user = email
-        return redirect(url_for("profile"))
+        logged_in = True
+        return redirect(url_for("home"))
 
 
-@google.authorized_handler
-@app.route('/login/authorized')
-def authorized():
-  resp = google.authorized_response()
-  if resp is None:
-    return 'Access denied: reason=%s error=%s' % (
-      request.args['error_reason'],
-      request.args['error_description']
-    )
-  session['google_token'] = (resp['access_token'], '')
-  user = google.get('userinfo')
-  jsonify({"data": user.data})
-  return redirect(url_for("profile"))
-  # return render_template("profile.html")
-  # return jsonify({"data": user.data})
-
-@google.tokengetter
-def get_google_oauth_token():
-    return session.get('google_token')
-
-@app.route('/logout')
-def logout():
-    session.pop('google_token', None)
-    return render_template('logout.html')
 
 
 @app.route("/time", methods=["GET", "POST"])
 def time():
     if request.method == "POST":
         stop_name = request.form["stop_name"]
+        print(stop_name)
         stops = mongo.db.stops
         stop_id = stops.find_one({"name": stop_name})
         if stop_id is not None:
@@ -191,19 +235,19 @@ def time():
 def home():
     global user
     users = mongo.db.users
+
     stop = users.find_one({"email":user, "stop":{"$exists":"true"}, "id":{"$exists":"true"}})
     if stop is not None:
+        print(stop["stop"])
         return render_template("home.html",stop = stop["stop"] )
     return render_template("home.html", stop = stop)
+
+
+
 
 @app.route("/weather")
 def weather():
     return render_template("weather.html")
-
-
-@app.route('/destination', methods=["POST", "GET"])
-def coords():
-    return render_template('destination.html')
 
 
 if __name__ == '__main__':
