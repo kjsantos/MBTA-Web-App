@@ -13,7 +13,7 @@ global user
 #sets up the app
 app = Flask(__name__)
 app.debug = True
-app.secret_key = 'ThisSux'
+app.secret_key = 'Data'
 app.config["MONGO_DBNAME"] = "MBTAData"
 app.config["MONGO_URI"] = "mongodb://localhost/27017"
 mongo = PyMongo(app)
